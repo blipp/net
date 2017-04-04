@@ -130,13 +130,13 @@ impl<T: WriteOut> WriteOut for EthernetPacket<T> {
     }
 }
 
-impl WriteOut for [u8] {
+impl<'a> WriteOut for &'a [u8] {
     fn len(&self) -> usize {
-        self.len()
+        (*self).len()
     }
 
     fn write_out(&self, packet: &mut TxPacket) -> Result<(), ()> {
-        for b in self {
+        for b in *self {
             packet.push_byte(*b)?;
         }
 
