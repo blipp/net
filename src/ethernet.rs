@@ -130,6 +130,20 @@ impl<T: WriteOut> WriteOut for EthernetPacket<T> {
     }
 }
 
+impl WriteOut for [u8] {
+    fn len(&self) -> usize {
+        self.len()
+    }
+
+    fn write_out(&self, packet: &mut TxPacket) -> Result<(), ()> {
+        for b in self {
+            packet.push_byte(*b)?;
+        }
+
+        Ok(())
+    }
+}
+
 use parse::{Parse, ParseError};
 use ipv4::Ipv4Kind;
 
