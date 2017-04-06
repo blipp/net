@@ -136,10 +136,7 @@ impl<'a> WriteOut for &'a [u8] {
     }
 
     fn write_out(&self, packet: &mut TxPacket) -> Result<(), ()> {
-        for b in *self {
-            packet.push_byte(*b)?;
-        }
-
+        packet.push_bytes(self)?;
         Ok(())
     }
 }
