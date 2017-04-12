@@ -65,7 +65,7 @@ impl IpProtocol {
 pub struct Ipv4Header {
     pub src_addr: Ipv4Address,
     pub dst_addr: Ipv4Address,
-    protocol: IpProtocol,
+    pub protocol: IpProtocol,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]

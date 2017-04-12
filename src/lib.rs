@@ -3,13 +3,18 @@
 #![feature(try_from)]
 #![feature(specialization)]
 #![feature(const_fn)]
+#![feature(asm)]
 
 #![cfg_attr(not(test), no_std)]
 
+#[macro_use]
 extern crate alloc;
+#[macro_use]
 extern crate collections;
 
 extern crate byteorder;
+
+extern crate bit_field;
 
 #[cfg(test)]
 mod core {
@@ -22,12 +27,16 @@ use alloc::boxed::Box;
 use collections::vec::Vec;
 use byteorder::{ByteOrder, NetworkEndian};
 
+#[macro_use]
+mod semi_hosting;
+
 pub mod ethernet;
 pub mod arp;
 pub mod ipv4;
 pub mod udp;
 pub mod dhcp;
 pub mod icmp;
+pub mod dns;
 mod ip_checksum;
 mod test;
 mod parse;

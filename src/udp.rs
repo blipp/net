@@ -3,12 +3,13 @@ use core::convert::TryInto;
 use {TxPacket, WriteOut};
 use ip_checksum;
 use dhcp::DhcpPacket;
+use dns::DnsPacket;
 use byteorder::{ByteOrder, NetworkEndian};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub struct UdpHeader {
-    src_port: u16,
-    dst_port: u16,
+    pub src_port: u16,
+    pub dst_port: u16,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -70,6 +71,7 @@ impl<'a> Parse<'a> for UdpPacket<&'a [u8]> {
 #[derive(Debug)]
 pub enum UdpKind<'a> {
     Dhcp(DhcpPacket),
+    Dns(DnsPacket),
     Unknown(&'a [u8]),
 }
 
@@ -78,11 +80,17 @@ impl<'a> Parse<'a> for UdpPacket<UdpKind<'a>> {
         let udp = UdpPacket::parse(data)?;
 
         let src_dst = (udp.header.src_port, udp.header.dst_port);
-        if src_dst == (67, 68) || src_dst == (68,67) {
+        if src_dst == (67, 68) || src_dst == (68, 67) {
             let dhcp = DhcpPacket::parse(udp.payload)?;
             Ok(UdpPacket {
                    header: udp.header,
                    payload: UdpKind::Dhcp(dhcp),
+               })
+        } else if udp.header.src_port == 53 || udp.header.dst_port == 53 {
+            let dns = DnsPacket::parse(udp.payload)?;
+            Ok(UdpPacket {
+                   header: udp.header,
+                   payload: UdpKind::Dns(dns),
                })
         } else {
             Ok(UdpPacket {
