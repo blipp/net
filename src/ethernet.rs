@@ -1,7 +1,11 @@
 use {TxPacket, WriteOut};
 use ipv4::Ipv4Packet;
 use arp::ArpPacket;
+use alloc::rc::{self, Rc};
 use core::fmt;
+use collections::boxed::{self, Box};
+#[macro_use]
+use collections::Vec;
 
 #[derive(Clone, Copy, PartialEq, Eq)]
 pub struct EthernetAddress([u8; 6]);
